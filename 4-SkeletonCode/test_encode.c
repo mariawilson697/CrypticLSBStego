@@ -1,31 +1,41 @@
 #include <stdio.h>
+#include<string.h>
 #include "encode.h"
 #include "types.h"
 
-int main()
+int main(int argc, char *argv[])
 {
-    EncodeInfo encInfo;
-    uint img_size;
+   int res = check_operation_type(argv);
+   if(res == e_encode)
+   {
+        printf("Selected Encoding");
+   }
+   else if(res == e_decode)
+   {
+        printf("Selected Decoding");
+   }
+   else if(res == e_unsupported)
+   {
+        printf("Error: Invalid option \n");
+        printf("Usage: For Encoding ./a.out -e beautiful.bmp secret.txt [stegno.bmp] ");
+        printf("     : For Decoding ./a.out -d beautiful.bmp secret.txt [stegno.bmp] ");
+   }
 
-    // Fill with sample filenames
-    encInfo.src_image_fname = "beautiful.bmp";
-    encInfo.secret_fname = "secret.txt";
-    encInfo.stego_image_fname = "stego_img.bmp";
+    return 0;
+}
 
-    // Test open_files
-    if (open_files(&encInfo) == e_failure)
+OperationType check_operation_type(char *argv[])
+{
+    if ((strcmp(argv[1], "-e")) == 0)
     {
-    	printf("ERROR: %s function failed\n", "open_files" );
-    	return 1;
+        return e_encode;
+    }
+    else if((strcmp(argv[1], "-d")) == 0)
+    {
+        return e_decode;
     }
     else
     {
-    	printf("SUCCESS: %s function completed\n", "open_files" );
+        return e_unsupported;
     }
-
-    // Test get_image_size_for_bmp
-    img_size = get_image_size_for_bmp(encInfo.fptr_src_image);
-    printf("INFO: Image size = %u\n", img_size);
-
-    return 0;
 }
